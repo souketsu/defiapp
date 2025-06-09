@@ -18,9 +18,11 @@
   <input id="newMessage" placeholder="输入新 message" />
   <button onclick="setMessage()">更新 message</button>
 
-  <script src="https://cdn.jsdelivr.net/npm/ethers/dist/ethers.min.js"></script>
+  <!-- 替换原有 ethers.js 引入 -->
+  <!---->
+<script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
   <script>
-    const contractAddress = "你的合约地址"; // ✅ 替换为部署合约地址
+    const contractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3"; // ✅ 替换为部署合约地址
     const abi = [
       "function message() view returns (string)",
       "function setMessage(string memory newMessage)"
