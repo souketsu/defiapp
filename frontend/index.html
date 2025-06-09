@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>HelloWorld DApp</title>
+</head>
+<body>
+  <h1>HelloWorld 合约交互</h1>
+
+  <button onclick="connectWallet()">连接钱包</button>
+  <p id="walletAddress"></p>
+
+  <hr>
+
+  <button onclick="getMessage()">读取 message</button>
+  <p>当前 message: <span id="message"></span></p>
+
+  <input id="newMessage" placeholder="输入新 message" />
+  <button onclick="setMessage()">更新 message</button>
+
+  <script src="https://cdn.jsdelivr.net/npm/ethers/dist/ethers.min.js"></script>
+  <script>
+    const contractAddress = "你的合约地址"; // ✅ 替换为部署合约地址
+    const abi = [
+      "function message() view returns (string)",
+      "function setMessage(string memory newMessage)"
+    ];
+
+    let provider, signer, contract;
+
+    async function connectWallet() {
+      if (window.ethereum) {
+        provider = new ethers.providers.Web3Provider(window.ethereum);
+        await provider.send("eth_requestAccounts", []);
+        signer = provider.getSigner();
+        const address = await signer.getAddress();
+        document.getElementById("walletAddress").innerText = "已连接: " + address;
+        contract = new ethers.Contract(contractAddress, abi, signer);
+      } else {
+        alert("请安装 MetaMask");
+      }
+    }
+
+    async function getMessage() {
+      if (!contract) return alert("请先连接钱包");
+      const msg = await contract.message();
+      document.getElementById("message").innerText = msg;
+    }
+
+    async function setMessage() {
+      if (!contract) return alert("请先连接钱包");
+      const newMsg = document.getElementById("newMessage").value;
+      const tx = await contract.setMessage(newMsg);
+      await tx.wait();
+      alert("已更新！");
+      getMessage(); // 更新 UI
+    }
+  </script>
+</body>
+</html>
